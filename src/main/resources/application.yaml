@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/atende_mais?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: varlennnn
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: updat
+    show-sql: true 
+    properties:
+      hibernate:
+        format_sql: true #
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true 
+
+  application:
+    name: atende
