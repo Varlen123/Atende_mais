@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import br.atende.atende.entity.Atendimento;
 import br.atende.atende.entity.Medico;
+import br.atende.atende.repository.AtendimentoRepository;
 import br.atende.atende.repository.MedicoRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,14 @@ public class MedicoService {
     
     private final MedicoRepository medicoRepository;
 
-    public List<Medico> findall(){
+    private final AtendimentoRepository atendimentoRepository;
+
+    public List<Medico> listaMedicos(){
         List<Medico> medicos = medicoRepository.findAll();
         return medicos;
     }
 
-    public Medico findById(int id){
+    public Medico procurarMedicosPorId(int id){
         return medicoRepository.findById(id).orElse(null);
     }
 
@@ -30,11 +34,29 @@ public class MedicoService {
         return medicoRepository.save(medicoAdicionar);
     }
 
-    public Medico update(Medico medicoUpdate){
-        return medicoRepository.save(medicoUpdate);
+     public Medico atualizar(int id, Medico medicoAtualizado) {
+        Medico medico = procurarMedicosPorId(id);
+        medico.setNome(medicoAtualizado.getNome());
+        medico.setCrm(medicoAtualizado.getCrm());
+        return medicoRepository.save(medico);
     }
 
     public void delete(Medico medicoDelete){
         medicoRepository.delete(medicoDelete);
     }
+
+     public List<Medico> buscarPorNome(String nome) {
+        return medicoRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    public Medico buscarPorCrm(String crm) {
+        return medicoRepository.findByCrm(crm)
+                .orElseThrow(() -> new RuntimeException("CRM não encontrado"));
+    }
+
+    public List<Atendimento> listarAtendimentosDoMedico(int medicoId) {
+        Medico medico = procurarMedicosPorId(medicoId);
+        return atendimentoRepository.findByMedico(medico);
+    }
+    
 }

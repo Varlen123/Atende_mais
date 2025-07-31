@@ -24,13 +24,13 @@ public class MedicoController {
 
     @GetMapping("/listarmedicos")
     public ResponseEntity<List<Medico>> listarMedicos(){
-        List<Medico> medicos = medicoService.findall();
+        List<Medico> medicos = medicoService.listaMedicos();
         return ResponseEntity.ok(medicos);
     }
 
     @GetMapping("/listarmedicos/{id}")
     public ResponseEntity<?> listarMedicoPorId(@PathVariable int id){
-        Medico medico = medicoService.findById(id);
+        Medico medico = medicoService.procurarMedicosPorId(id);
         if(medico != null){
             return ResponseEntity.ok(medico);
         }else{
@@ -41,7 +41,7 @@ public class MedicoController {
 
     @PutMapping("/atualizarmedicos/{id}")
     public ResponseEntity<?> alterarMedicoPorId(@PathVariable int id, @RequestBody Medico atualizarMedico) {
-        Medico medico = medicoService.update(id, atualizarMedico);
+        Medico medico = medicoService.atualizar(id, atualizarMedico);
         if (medico != null) {
             return ResponseEntity.ok(medico);
         } else {
@@ -52,7 +52,7 @@ public class MedicoController {
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<String> deletarMedicoPorId(@PathVariable int id) {
-        Medico medico = medicoService.findById(id);
+        Medico medico = medicoService.procurarMedicosPorId(id);
         if (medico != null) {
             medicoService.delete(medico);
             return ResponseEntity.ok("Médico com o ID " + id + " deletado com sucesso");
@@ -60,5 +60,19 @@ public class MedicoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body("Médico com o id " + id + " nao encontrado");
         }
+    }  
+
+    @GetMapping("/buscarporcrm/{crm}")
+    public ResponseEntity<Medico> buscarPorCrm(@PathVariable String crm) {
+        Medico medico = medicoService.buscarPorCrm(crm);
+        return ResponseEntity.ok(medico);
     }
+
+    @GetMapping("/buscarpornome/{nome}")
+    public ResponseEntity<List<Medico>> buscarPorNome(@PathVariable String nome) {
+        List<Medico> medicos = medicoService.buscarPorNome(nome);
+        return ResponseEntity.ok(medicos);
+    }
+
+    
 }
