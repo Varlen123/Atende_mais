@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: updat
+      ddl-auto: update
     show-sql: true 
     properties:
       hibernate:
@@ -19,4 +19,4 @@ spring:
       INDENT_OUTPUT: true 
 
   application:
-    name: atende
+    name: atende_mais
