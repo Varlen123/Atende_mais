@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping("atende/medicos")
 public class MedicoController {
     
     private final MedicoService medicoService;

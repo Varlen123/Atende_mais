@@ -15,9 +15,7 @@ public class PacienteService {
     
     private final PacienteRepository pacienteRepository; 
 
-    // Adiciona paciente junto com endereço
     public Paciente adicionarPaciente(Paciente paciente){
-        // Aqui o paciente já deve ter o endereço setado (se obrigatório)
         return pacienteRepository.save(paciente);
     }
 

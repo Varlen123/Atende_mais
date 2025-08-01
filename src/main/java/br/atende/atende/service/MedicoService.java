@@ -55,8 +55,8 @@ public class MedicoService {
     }
 
     public List<Atendimento> listarAtendimentosDoMedico(int medicoId) {
-        Medico medico = procurarMedicosPorId(medicoId);
-        return atendimentoRepository.findByMedico(medico);
+    Medico medico = procurarMedicosPorId(medicoId);
+    return atendimentoRepository.findByMedicoId(medico.getId());
     }
     
 }

@@ -10,6 +10,7 @@ import br.atende.atende.entity.Paciente;
 
 public interface AtendimentoRepository extends JpaRepository<Atendimento, Integer>{
 
-        List<Atendimento> findByMedico(Medico medico);
-        List<Atendimento> findByPaciente(Paciente paciente);
+        List<Atendimento> findByPacienteId(int pacienteId);
+        List<Atendimento> findByMedicoId(int medicoId);
+
 }
