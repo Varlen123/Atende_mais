@@ -1,74 +1,87 @@
 package br.atende.atende.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import br.atende.atende.controller.request.AtendimentoRequest;
+import br.atende.atende.controller.response.AtendimentoResponse;
 import br.atende.atende.entity.Atendimento;
+import br.atende.atende.entity.Medico;
+import br.atende.atende.entity.Paciente;
 import br.atende.atende.service.AtendimentoService;
+import br.atende.atende.service.MedicoService;
+import br.atende.atende.service.PacienteService;
+import br.atende.atende.mapper.AtendimentoMapper;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("atende/atendimento")
 public class AtendimentoController {
-    
+
     private final AtendimentoService atendimentoService;
 
+    private final MedicoService medicoService;
+
+    private final PacienteService pacienteService;
+
     @PostMapping("/criaratendimentos")
-    public ResponseEntity<?> criarAtendimento(
-        @RequestParam int pacienteId,
-        @RequestParam int medicoId,
-        @RequestBody Atendimento atendimento) {
-            try{
-                Atendimento novoAtendimento = atendimentoService.criarAtendimento(pacienteId, medicoId, atendimento);
-                return ResponseEntity.ok(novoAtendimento);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        }
+public ResponseEntity<?> criarAtendimento(@RequestBody AtendimentoRequest request) {
+    try {
+        Paciente paciente = pacienteService.procurarPacientePorId(request.pacienteId());
+        Medico medico = medicoService.procurarMedicosPorId(request.medicoId())
+                .orElseThrow(() -> new RuntimeException("Médico nao encontrado"));
+        Atendimento atendimento = atendimentoService.criarAtendimento(request, paciente, medico);
+        AtendimentoResponse response = AtendimentoMapper.toAtendimentoResponse(atendimento);
+        return ResponseEntity.ok(response);
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
+
+
 
     @GetMapping("/listaratendimentos")
-    public ResponseEntity<List<Atendimento>> listarAtendimentos() {
+    public ResponseEntity<List<AtendimentoResponse>> listarAtendimentos() {
         List<Atendimento> atendimentos = atendimentoService.listarAtendimentos();
-        return ResponseEntity.ok(atendimentos);
+        List<AtendimentoResponse> response = atendimentos.stream()
+                .map(AtendimentoMapper::toAtendimentoResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("listaratendimento/{id}")
-    public ResponseEntity<Atendimento> listarAtendimentoPorId(@RequestParam int id) {
-        Atendimento atendimento = atendimentoService.buscarAtendimentoPorId(id).get();
-        return ResponseEntity.ok(atendimento);
+    @GetMapping("/listaratendimento/{id}")
+    public ResponseEntity<AtendimentoResponse> listarAtendimentoPorId(@PathVariable int id) {
+        return atendimentoService.buscarAtendimentoPorId(id)
+                .map(AtendimentoMapper::toAtendimentoResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    
-    @GetMapping("deletaratendimento/{id}")
-    public ResponseEntity<String> deletarAtendimento(@RequestParam int id) {
+    @DeleteMapping("/deletaratendimento/{id}")
+    public ResponseEntity<String> deletarAtendimento(@PathVariable int id) {
         atendimentoService.deletar(id);
         return ResponseEntity.ok("Atendimento deletado com sucesso");
     }
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Handles HTTP GET requests to retrieve a list of atendimentos for a specific paciente.
- *
- * @param pacienteId the ID of the paciente whose atendimentos are to be retrieved
- * @return a ResponseEntity containing the list of atendimentos for the given paciente
- */
-
-/*******  a1eda11c-d18f-4d02-9cd0-e449b3cff2c7  *******/
     @GetMapping("/paciente/{pacienteId}")
-    public ResponseEntity<List<Atendimento>> buscarPorPaciente(@PathVariable int pacienteId) {
-        return ResponseEntity.ok(atendimentoService.buscarPorPaciente(pacienteId));
+    public ResponseEntity<List<AtendimentoResponse>> buscarPorPaciente(@PathVariable int pacienteId) {
+        List<Atendimento> atendimentos = atendimentoService.buscarPorPaciente(pacienteId);
+        List<AtendimentoResponse> response = atendimentos.stream()
+                .map(AtendimentoMapper::toAtendimentoResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
+
     @GetMapping("/medico/{medicoId}")
-    public ResponseEntity<List<Atendimento>> buscarPorMedico(@PathVariable int medicoId) {
-        return ResponseEntity.ok(atendimentoService.buscarPorMedico(medicoId));
+    public ResponseEntity<List<AtendimentoResponse>> buscarPorMedico(@PathVariable int medicoId) {
+        List<Atendimento> atendimentos = atendimentoService.buscarPorMedico(medicoId);
+        List<AtendimentoResponse> response = atendimentos.stream()
+                .map(AtendimentoMapper::toAtendimentoResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 }
