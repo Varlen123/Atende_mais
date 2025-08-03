@@ -1,6 +1,7 @@
 package br.atende.atende.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -26,16 +27,18 @@ public class MedicoService {
         return medicos;
     }
 
-    public Medico procurarMedicosPorId(int id){
-        return medicoRepository.findById(id).orElse(null);
-    }
+   public Optional<Medico> procurarMedicosPorId(int id) {
+    return medicoRepository.findById(id);
+}
+
 
     public Medico save(Medico medicoAdicionar){
         return medicoRepository.save(medicoAdicionar);
     }
 
      public Medico atualizar(int id, Medico medicoAtualizado) {
-        Medico medico = procurarMedicosPorId(id);
+        Medico medico = procurarMedicosPorId(id)
+                .orElseThrow(() -> new RuntimeException("Médico nao encontrado"));
         medico.setNome(medicoAtualizado.getNome());
         medico.setCrm(medicoAtualizado.getCrm());
         return medicoRepository.save(medico);
@@ -55,7 +58,8 @@ public class MedicoService {
     }
 
     public List<Atendimento> listarAtendimentosDoMedico(int medicoId) {
-    Medico medico = procurarMedicosPorId(medicoId);
+    Medico medico = procurarMedicosPorId(medicoId)
+    .orElseThrow(() -> new RuntimeException("Médico nao encontrado"));
     return atendimentoRepository.findByMedicoId(medico.getId());
     }
     

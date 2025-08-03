@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.atende.atende.entity.Atendimento;
-import br.atende.atende.entity.Medico;
-import br.atende.atende.entity.Paciente;
+import br.atende.atende.entity.Atendimento;;
 
 public interface AtendimentoRepository extends JpaRepository<Atendimento, Integer>{
 

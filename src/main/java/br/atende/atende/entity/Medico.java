@@ -3,9 +3,11 @@ package br.atende.atende.entity;
 import java.util.List;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+@Builder
 @Entity
 @Getter
 @Setter
@@ -22,6 +24,9 @@ public class Medico{
 
     @Column(length =10, nullable = false)
     private String crm;
+
+    @Column(length = 100, nullable = false)
+    private String especialidade;
 
     @OneToMany(mappedBy = "medico")
     private List<Atendimento> atendimentos;
