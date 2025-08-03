@@ -1,8 +1,11 @@
 package br.atende.atende.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
+
+@Builder
 @Entity
 @Data
 @Table(name = "endereco")

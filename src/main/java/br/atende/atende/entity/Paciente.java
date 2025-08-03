@@ -3,8 +3,10 @@ package br.atende.atende.entity;
 import java.util.List;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Entity
 @Data
 @Table(name = "paciente")
