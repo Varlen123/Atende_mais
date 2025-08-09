@@ -19,14 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class PacienteController {
 
     private final PacienteService pacienteService;
-
-    @PostMapping("/adicionarpacientes")
-    public ResponseEntity<PacienteResponse> adicionarPaciente(@RequestBody PacienteRequest pacienteRequest){
-        Paciente paciente = PacienteMapper.toPaciente(pacienteRequest);
-        Paciente pacienteSalvo = pacienteService.adicionarPaciente(paciente);
-        PacienteResponse response = PacienteMapper.toPacienteResponse(pacienteSalvo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+    
 
     @GetMapping("/listarpacientes")
     public ResponseEntity<List<PacienteResponse>> listarPacientes(){
