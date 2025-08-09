@@ -32,8 +32,5 @@ public class Paciente {
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
     private Endereco endereco;
 
-    @OneToMany(mappedBy = "medico")
-    private List<Consulta> consultas;
-
     
 }

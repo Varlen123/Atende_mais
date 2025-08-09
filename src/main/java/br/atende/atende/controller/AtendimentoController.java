@@ -1,6 +1,7 @@
 package br.atende.atende.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,18 +34,15 @@ public ResponseEntity<?> criarAtendimento(@RequestBody AtendimentoRequest reques
         Paciente paciente = pacienteService.procurarPacientePorId(request.pacienteId());
         Medico medico = medicoService.procurarMedicosPorId(request.medicoId())
                 .orElseThrow(() -> new RuntimeException("Médico nao encontrado"));
-        
-            if (paciente.getId() == medico.getId()) {
-            throw new RuntimeException("Paciente não pode marcar consulta consigo mesmo");
-        }
-        
-        Atendimento atendimento = atendimentoService.criarAtendimento(request);
+        Atendimento atendimento = atendimentoService.criarAtendimento(request, paciente, medico);
         AtendimentoResponse response = AtendimentoMapper.toAtendimentoResponse(atendimento);
         return ResponseEntity.ok(response);
     } catch (RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+
+
 
     @GetMapping("/listaratendimentos")
     public ResponseEntity<List<AtendimentoResponse>> listarAtendimentos() {
