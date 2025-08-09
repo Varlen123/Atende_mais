@@ -24,19 +24,22 @@ public class AtendimentoService {
         private final PacienteRepository pacienteRepository;
 
     
-        public Atendimento criarAtendimento(AtendimentoRequest request, Paciente paciente, Medico medico) {
-    Optional<Paciente> pacienteOpt = pacienteRepository.findById(request.pacienteId());
-    Optional<Medico> medicoOpt = medicoRepository.findById(request.medicoId());
+        public Atendimento criarAtendimento(AtendimentoRequest request) {
+    Paciente paciente = pacienteRepository.findById(request.pacienteId())
+        .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
 
-    if (pacienteOpt.isPresent() && medicoOpt.isPresent()) {
-        Atendimento atendimento = AtendimentoMapper.toAtendimento(request, paciente, medico);
-        atendimento.setPaciente(pacienteOpt.get());
-        atendimento.setMedico(medicoOpt.get());
-        return atendimentoRepository.save(atendimento);
-    } else {
-        throw new RuntimeException("Paciente ou Médico não encontrado");
-    }
+    Medico medico = medicoRepository.findById(request.medicoId())
+        .orElseThrow(() -> new RuntimeException("Médico não encontrado"));
+
+    Atendimento atendimento = Atendimento.builder()
+        .data(request.data())
+        .paciente(paciente)
+        .medico(medico)
+        .build();
+
+    return atendimentoRepository.save(atendimento);
 }
+
 
         public List<Atendimento> listarAtendimentos(){
             return atendimentoRepository.findAll();
