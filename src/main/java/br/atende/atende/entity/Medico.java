@@ -31,7 +31,4 @@ public class Medico{
     @OneToMany(mappedBy = "medico")
     private List<Atendimento> atendimentos;
 
-    @OneToMany(mappedBy = "medico")
-    private List<Consulta> consultas;
-
 }

@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import br.atende.atende.entity.Consulta;
 import br.atende.atende.entity.Paciente;
 import br.atende.atende.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,7 @@ public class PacienteService {
     
     private final PacienteRepository pacienteRepository; 
 
-    public Paciente marcarConsulta(Consulta consulta) {
-        Paciente paciente = consulta.getPaciente();
-        paciente.getConsultas().add(consulta);
+    public Paciente adicionarPaciente(Paciente paciente){
         return pacienteRepository.save(paciente);
     }
 
